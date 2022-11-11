@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 
 class UserCreationForm(forms.ModelForm):
@@ -10,4 +11,10 @@ class UserCreationForm(forms.ModelForm):
         model = get_user_model()
         fields = ('username', 'email', 'password')
     
-    
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        confirm_password = cleaned_data.get('confirm_password')
+        if password != confirm_password:
+            raise ValidationError('パスワードが一致しません')
+            
