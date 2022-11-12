@@ -48,7 +48,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email' # Userモデルを一意に識別するフィールド
     REQUIRED_FIELDS = ['username'] # createsuperuserコマンドでユーザー作成する時の追加フィールド
 
-    objects = UserManager()
-
     def __str__(self):
         return self.username
