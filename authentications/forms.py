@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 
 class UserCreationForm(forms.ModelForm):
@@ -25,3 +26,13 @@ class UserCreationForm(forms.ModelForm):
         user.save()
         return user
 
+
+class UserChangeForm(forms.ModelForm):
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'email', 'password', 'is_staff', 'is_superuser', 'is_active')
+
+    def clean_password(self):
+        return self.initial['password']
