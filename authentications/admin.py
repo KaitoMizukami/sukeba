@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 from .forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.models import Group
 
 
 class CustomUserAdmin(UserAdmin):
@@ -26,3 +27,6 @@ class CustomUserAdmin(UserAdmin):
             'username','email', 'password', 'confirm_password'
         )})
     )
+
+admin.site.register(get_user_model(), CustomUserAdmin) # 新しいユーザーアドミンを登録
+admin.site.unregister(Group) # built-inのグループモデルを登録解除
