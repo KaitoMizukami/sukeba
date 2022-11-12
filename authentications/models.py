@@ -5,7 +5,9 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    
+    """
+    ユーザーを作成する関数。戻り値は作ったユーザーオブジェクト 
+    """
     def create_user(self, email, username, password=None):
         if not email:
             raise ValueError('メールアドレスは必須です')
@@ -22,6 +24,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, username, password=None):
+        """
+        スーパーユーザーを作成する関数。戻り値は作ったユーザーオブジェクト 
+        """
         super_user = self.create_user(email, username, password)
         super_user.is_staff = True
         super_user.is_superuser = True
