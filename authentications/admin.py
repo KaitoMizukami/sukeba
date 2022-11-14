@@ -37,6 +37,9 @@ class CustomUserAdmin(UserAdmin):
     # 3つのフィールドでユーザーを絞り込む
     list_filter = ('is_staff', 'is_superuser', 'is_active',)
 
+    # 検索される時に使われるフィールド
+    search_fields = ('email', 'username',)
+
 
 admin.site.register(get_user_model(), CustomUserAdmin) # 新しいユーザーアドミンを登録
 admin.site.unregister(Group) # built-inのグループモデルを登録解除
