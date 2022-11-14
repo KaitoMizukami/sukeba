@@ -13,20 +13,27 @@ class CustomUserAdmin(UserAdmin):
     # ユーザーモデルの表示に使用されるフィールド
     list_display = ('email', 'username', 'is_staff')
     fieldsets = (
-        ('ユーザー情報', {'fields': (
-            'username', 'email', 'password', 'instagram_username'
-        )}),
-        ('パーミッション', {'fields': (
-            'is_active', 'is_staff', 'is_superuser'
-        )})
+        ('ユーザー情報', {
+            'fields': (
+                'username', 'email', 'password', 'instagram_username'
+            )
+        }),
+        ('パーミッション', {
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser'
+            )
+        }),
     )
 
     # ユーザーインスタンスを作成する時に必要なフィールド
     add_fieldsets = (
-        ('ユーザユーザー情報', {'fields': (
-            'username','email', 'password', 'confirm_password'
-        )})
+        ('ユーザー情報', {
+            'fields': (
+                'username','email', 'password', 'confirm_password'
+            )
+        }),
     )
+
 
 admin.site.register(get_user_model(), CustomUserAdmin) # 新しいユーザーアドミンを登録
 admin.site.unregister(Group) # built-inのグループモデルを登録解除
