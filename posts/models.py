@@ -35,7 +35,7 @@ class Post(models.Model):
     投稿に関するモデル
     """
     author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='投稿者')
-    location = models.ForeignKey(Location, on_delete=models.CASCADE, verbose_name='スケートパーク')
+    location = models.OneToOneField(Location, on_delete=models.CASCADE, verbose_name='スケートパーク')
     body = models.CharField(max_length=300, verbose_name='内容')
     # オブジェクトが最初に作成されたときに、フィールドを now に自動的に設定
     created_at = models.DateTimeField(auto_now_add=True) 
