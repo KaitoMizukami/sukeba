@@ -26,6 +26,10 @@ class Location(models.Model):
     city = models.CharField(max_length=10, verbose_name='市名')
     location_image = models.ImageField(upload_to='images/', verbose_name='写真')
 
+    class Meta:
+        verbose_name = 'スケートパーク'
+        verbose_name_plural = 'スケートパーク'
+
     def __str__(self):
         return f'{self.name}({self.prefecture})'
 
@@ -38,7 +42,11 @@ class Post(models.Model):
     location = models.OneToOneField(Location, on_delete=models.CASCADE, verbose_name='スケートパーク')
     body = models.CharField(max_length=300, verbose_name='内容')
     # オブジェクトが最初に作成されたときに、フィールドを now に自動的に設定
-    created_at = models.DateTimeField(auto_now_add=True) 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = '投稿'
+        verbose_name_plural = '投稿'
 
     def __str__(self):
         return self.body[:50]
