@@ -5,10 +5,10 @@
 
 <div class="columns">
     <div class="column is-one-quarter">
-        
+        {% include 'posts/prefectures.html' %}
     </div>
     <div class="column is-half">
-        {% for post in object_list %}
+        {% for post in post_list %}
         <div class="box">
             <article class="media">
                 <div class="media-left">
