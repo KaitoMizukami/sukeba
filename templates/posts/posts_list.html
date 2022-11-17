@@ -8,6 +8,7 @@
         {% include 'posts/prefectures.html' %}
     </div>
     <div class="column is-half">
+        <h3 class="is-size-4 mb-4"><span class="has-text-primary">{{ post_list|length }}</span> 件</h3>
         {% for post in post_list %}
         <div class="box">
             <article class="media">
