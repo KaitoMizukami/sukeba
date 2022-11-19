@@ -20,7 +20,9 @@
                         <strong>{{ post.author }}</strong>
                     </a>
                     <p class="is-size-5">
-                        <strong>{{ post.location }}</strong>
+                        <a href="{{ post.get_absolute_url }}">
+                            <strong>{{ post.location }}</strong>
+                        </a>
                     </p>
                     <div class="block">
                         {% comment %} 投稿内容が75文字以上だったらそれ以降は表示しない {% endcomment %}
