@@ -20,6 +20,7 @@ class PostAdmin(admin.ModelAdmin):
     # 検索される時に使われるフィールド
     search_fields = ('author', 'location',)
 
+
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ('name', 'prefecture', 'city')
