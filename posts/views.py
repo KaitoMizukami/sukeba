@@ -90,3 +90,7 @@ class PostsDetailView(DetailView):
     template_name = 'posts/posts_detail.html'
     model = Post
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['prefectures'] = PREFECTURE_CHOICES
+        return context
