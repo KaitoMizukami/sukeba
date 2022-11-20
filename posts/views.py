@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, CreateView
+from django.views.generic import (
+    ListView, CreateView, DetailView
+)
 from django.db.models import Q
 
 from .models import Post
@@ -82,3 +84,9 @@ class PostsCreateView(CreateView):
             'location_form': location_form
         }
         return render(request, 'posts/posts_create.html', context)
+
+
+class PostsDetailView(DetailView):
+    template_name = 'posts/posts_detail.html'
+    model = Post
+
