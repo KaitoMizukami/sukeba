@@ -6,24 +6,55 @@
     <div class="column is-one-quarter">
         {% include 'posts/prefectures.html' %}
     </div>
-    <div class="column is-half has-background-link-light">
-        <div class="block">
-            <h1 class="is-size-4">
-                <strong>{{ post.location.name }}</strong>
-            </h1>
+    <div class="column is-half">
+        <div class="has-background-link-light p-4">
+            <div class="block">
+                <h1 class="is-size-4">
+                    <strong>{{ post.location.name }}</strong>
+                </h1>
+            </div>
+            <div class="block">
+                <img src="{{ post.location.location_image.url }}" width="400" height="420">
+            </div>
+            <div class="block">
+                場所: {{ post.location.prefecture }} - {{ post.location.city }}
+            </div>
+            <div class="block">
+                情報: {{ post.body }}
+            </div>
+            <div class="block">
+                作成日: {{ post.created_at }}
+            </div>
         </div>
-        <div class="block">
-            <img src="{{ post.location.location_image.url }}" width="400" height="420">
-        </div>
-        <div class="block">
-            場所: {{ post.location.prefecture }} - {{ post.location.city }}
-        </div>
-        <div class="block">
-            情報: {{ post.body }}
-        </div>
-        <div class="block">
-            作成日: {{ post.created_at }}
-        </div>
+        <br>
+        <h4 class="is-size-4">コメントを書く</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="is-inline">
+                {{ comment_form.body }} 
+            </div>
+            <button class="button is-primary mt-2">投稿</button>
+        </form>
+    </div>
+    <div class="column is-one-quarter">
+        <h3 class="is-size-3">
+            コメント
+        </h3>
+        <hr>
+        <h4 class="is-size-4 mb-4"><span class="has-text-primary">{{ post.comment_set.all|length }}</span> 件</h4>
+        {% for comment in post.comment_set.all %}
+            <article class="message is-link">
+                <div class="message-header">
+                    <p>{{ comment.author }}</p>
+                </div>
+                <div class="message-body">
+                    {{ comment.body }}
+                    <div class="mt-3">
+                        {{ comment.created_at }}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
     </div>
 </div>
 
