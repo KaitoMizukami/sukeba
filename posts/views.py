@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from .models import Post
 from .prefectures import PREFECTURE_CHOICES
-from .forms import PostForm, LocationForm
+from .forms import PostForm, LocationForm, CommentForm
 
 
 class PostsListView(ListView):
@@ -69,7 +69,6 @@ class PostsCreateView(CreateView):
         """
         post_form = PostForm(request.POST, prefix='post')
         location_form = LocationForm(request.POST, request.FILES, prefix='location')
-        print(location_form)
         if post_form.is_valid() and location_form.is_valid():
             new_location = location_form.save()
             # postモデルのオブジェクトを作成
@@ -87,10 +86,41 @@ class PostsCreateView(CreateView):
 
 
 class PostsDetailView(DetailView):
+    """
+    投稿の詳細情報をHTMLに渡す
+    """
     template_name = 'posts/posts_detail.html'
     model = Post
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['prefectures'] = PREFECTURE_CHOICES
-        return context
+    def get(self, request, pk):
+        """ 
+        GETメソッドでリクエストが来たらコメントのフォーム、投稿、全都道府県のタプルを渡す
+        """
+        comment_form = CommentForm()
+        post = Post.objects.get(id=pk)
+        comments = post.comment_set.all
+        prefectures = PREFECTURE_CHOICES
+        context = {
+            'post': post,
+            'comments': comments,
+            'comment_form': comment_form,
+            'prefectures': prefectures
+        }
+        return render(request, 'posts/posts_detail.html', context)
+
+    def post(self, request, *args, **kwargs):
+        """
+        POSTメソッドでリクエストが来たらコメントの検証をする
+        検証成功、失敗どちらも同じ投稿詳細ページを返す
+        """
+        comment_form = CommentForm(request.POST)
+        # 投稿のIDを取得
+        post_id = self.kwargs.get('pk')
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            post = Post.objects.get(id=post_id)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('posts:detail', pk=post.id)
+        return render(request, 'posts/posts_detail', pk=post_id)
