@@ -1,10 +1,13 @@
 from django import forms
 
-from .models import Post, Location
+from .models import Post, Location, Comment
 from .prefectures import PREFECTURE_CHOICES
 
 
 class PostForm(forms.ModelForm):
+    """
+    投稿用フォーム
+    """
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields['body'].label = '投稿内容' # labelの文字を変更
@@ -23,6 +26,9 @@ class PostForm(forms.ModelForm):
 
 
 class LocationForm(forms.ModelForm):
+    """
+    スケートパーク用フォーム
+    """
     def __init__(self, *args, **kwargs):
         super(LocationForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = 'スケートパーク名'
@@ -62,3 +68,18 @@ class LocationForm(forms.ModelForm):
         fields = ['name', 'prefecture', 'city', 'location_image']
 
     prefix = 'location'
+
+
+class CommentForm(forms.ModelForm):
+    """
+    コメント用フォーム
+    """
+    body = forms.CharField(widget=forms.TextInput(
+        attrs={
+            'class': 'input'
+        }
+    ))
+
+    class Meta:
+        model = Comment
+        fields = ['body']
