@@ -5,7 +5,7 @@ from django.views.generic import (
 from django.db.models import Q
 
 from .models import Post
-from .prefectures import PREFECTURE_CHOICES
+from .prefectures import PREFECTURE_CHOICES, PREFECTURE_ID
 from .forms import PostForm, LocationForm, CommentForm
 
 
@@ -95,16 +95,32 @@ class PostsDetailView(DetailView):
     def get(self, request, pk):
         """ 
         GETメソッドでリクエストが来たらコメントのフォーム、投稿、全都道府県のタプルを渡す
+        スケートパークの県名を取得し、ID番号を取得する。そのID番号を使って天気予報 APIにリクエストを送ると
+        その地域の現在の天候が返ってくる
         """
+        import requests
+
         comment_form = CommentForm()
         post = Post.objects.get(id=pk)
         comments = post.comment_set.all
+        post_prefecture = post.location.prefecture
+        # APIリクエストでパラメーターとして使うID番号を取得
+        prefecture_id = PREFECTURE_ID[post_prefecture]
+        # 天気予報APIにリクエストを送信
+        try:
+            res = requests.get(f'https://weather.tsukumijima.net/api/forecast?city={prefecture_id}')
+            json_res = res.json()
+            # 天候情報を取得
+            current_weather = json_res['forecasts'][0]['telop']
+        except Exception as err:
+            current_weather = 'エラーが起きました'
         prefectures = PREFECTURE_CHOICES
         context = {
             'post': post,
             'comments': comments,
             'comment_form': comment_form,
-            'prefectures': prefectures
+            'prefectures': prefectures,
+            'current_weather': current_weather
         }
         return render(request, 'posts/posts_detail.html', context)
 
