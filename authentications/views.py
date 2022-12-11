@@ -1,3 +1,11 @@
 from django.shortcuts import render
+from django.views.generic import FormView
 
-# Create your views here.
+from .forms import UserCreationForm
+
+
+class AuthenticationsSignup(FormView):
+    template_name = 'authentications/authentications_login.html'
+    form_class = UserCreationForm
+
+    
