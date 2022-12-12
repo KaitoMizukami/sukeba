@@ -16,16 +16,16 @@
   
     <div class="navbar-end">
         <div class="navbar-item">
-            <p class="mr-6">{{ request.user }}さん、ようこそ</p>
             <div class="buttons">
                 {% if request.user.is_authenticated %}
-                    <a class="button is-warning" href="">ログアウト</a>
+                    <p class="mr-6">{{ request.user }}さん、ようこそ</p>
+                    <a class="button is-warning" href="{% url 'authentications:logout' %}">ログアウト</a>
                 {% else %}
                     <a class="button is-primary" href="{% url 'authentications:signup' %}">
                         <strong>新規登録</strong>
                     </a>
-                    <a class="button is-light">
-                        Log in
+                    <a class="button is-light" href="{% url 'authentications:login' %}">
+                        ログイン
                     </a>
                 {% endif %}
             </div>
