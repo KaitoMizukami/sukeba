@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login
 from .forms import UserCreationForm, UserLoginForm
 
 
-class AuthenticationsSignup(FormView):
+class AuthenticationsSignupView(FormView):
     template_name = 'authentications/authentications_signup.html'
     form_class = UserCreationForm
 
