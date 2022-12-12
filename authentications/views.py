@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import FormView
 from django.contrib.auth import authenticate, login
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserLoginForm
 
 
 class AuthenticationsSignup(FormView):
@@ -25,3 +25,17 @@ class AuthenticationsSignup(FormView):
         else:
             return redirect('authentications:signup')
 
+
+class AuthenticationsLoginView(FormView):
+    template_name = 'authentications/authentications_login.html'
+    form_class = UserLoginForm
+
+    def post(self, request, *args, **kwargs):
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(email, password)
+        if user is not None:
+            login(request, user)
+            return redirect('posts:list')
+        return redirect('authentications:login')
+        
