@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
-from django.views.generic import FormView
-from django.contrib.auth import authenticate, login
+from django.views.generic import FormView, View
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import UserCreationForm, UserLoginForm
 
@@ -38,9 +38,17 @@ class AuthenticationsLoginView(FormView):
         """
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(email, password)
+        user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('posts:list')
         return redirect('authentications:login')
         
+
+class AuthenticationsLogoutView(View):
+    """
+    ログアウト機能　HTMLファイルはなし
+    """
+    def get(self, request):
+        logout(request)
+        return redirect('authentications:login')
