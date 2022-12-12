@@ -31,6 +31,11 @@ class AuthenticationsLoginView(FormView):
     form_class = UserLoginForm
 
     def post(self, request, *args, **kwargs):
+        """ 
+        Postリクエスト時の処理
+        送信されたメールアドレスとパスワードでユーザーを検索し見つかったらログインする
+        見つからなかったらログインページを返す
+        """
         email = request.POST['email']
         password = request.POST['password']
         user = authenticate(email, password)
