@@ -3,6 +3,7 @@ from django.views.generic import (
     ListView, CreateView, DetailView
 )
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Post
 from .prefectures import PREFECTURE_CHOICES, PREFECTURE_ID
@@ -41,7 +42,7 @@ class PostsListView(ListView):
         return context
 
 
-class PostsCreateView(CreateView):
+class PostsCreateView(LoginRequiredMixin, CreateView):
     """ 
     投稿の作成フォームをHTMLに渡す
     Postメソッドでリクエストが来たらフォームの検証をし保存する
@@ -85,7 +86,7 @@ class PostsCreateView(CreateView):
         return render(request, 'posts/posts_create.html', context)
 
 
-class PostsDetailView(DetailView):
+class PostsDetailView(LoginRequiredMixin, DetailView):
     """
     投稿の詳細情報をHTMLに渡す
     """
