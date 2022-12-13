@@ -1,13 +1,32 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from django.views.generic import (
-    ListView, CreateView, DetailView
+    ListView, CreateView, DetailView, DeleteView
 )
 from django.db.models import Q
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 from .models import Post
 from .prefectures import PREFECTURE_CHOICES, PREFECTURE_ID
 from .forms import PostForm, LocationForm, CommentForm
+
+
+class AuthorOnly(LoginRequiredMixin, UserPassesTestMixin):
+    """
+    ユーザーのアクセスを制限するクラス
+    """
+    def test_func(self):
+        """
+        投稿の作者とログインしてるユーザーが同じかどうか判定する
+        """
+        post = self.get_object()
+        return post.author == self.request.user
+    
+    def handle_no_permission(self):
+        """
+        test_funcでFlaseだった場合特定のページにリダイレクトする
+        """
+        return redirect('posts:detail', pk=self.kwargs['pk'])
 
 
 class PostsListView(ListView):
@@ -141,3 +160,12 @@ class PostsDetailView(LoginRequiredMixin, DetailView):
             comment.save()
             return redirect('posts:detail', pk=post.id)
         return render(request, 'posts/posts_detail', pk=post_id)
+
+
+class PostsDeleteView(AuthorOnly, DeleteView):
+    """
+    投稿削除するHTMLを渡す
+    """
+    template_name = 'posts/posts_delete.html'
+    model = Post
+    success_url = reverse_lazy('posts:list')
