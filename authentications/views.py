@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect
-from django.views.generic import FormView, View
+from django.views.generic import FormView, View, DetailView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth import get_user_model
 
 from .forms import UserCreationForm, UserLoginForm
+
+
+User = get_user_model()
 
 
 class UnauthenticatedOnly(UserPassesTestMixin):
@@ -66,3 +70,20 @@ class AuthenticationsLogoutView(View):
     def get(self, request):
         logout(request)
         return redirect('authentications:login')
+
+
+class UserProfileView(DetailView):
+    """
+    特定のユーザーの投稿一覧を取得しHTMLを返す
+    """
+    model = User
+    template_name = 'authentications/user_profile.html'
+
+    def get(self, request, pk):
+        user = User.objects.get(id=pk)
+        user_posts = user.post_set.all()
+        context = {
+            'user': user,
+            'posts': user_posts
+        }
+        return render(request, 'authentications/user_profile.html', context)
