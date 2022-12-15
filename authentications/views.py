@@ -41,7 +41,7 @@ class AuthenticationsSignupView(UnauthenticatedOnly, FormView):
             login(request, user)
             return redirect('posts:list')
         else:
-            return redirect('authentications:signup')
+            return render(request, 'authentications/authentications_signup.html', {'form': user_form})
 
 
 class AuthenticationsLoginView(UnauthenticatedOnly, FormView):
