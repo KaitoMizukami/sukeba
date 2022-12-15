@@ -15,7 +15,7 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         ('ユーザー情報', {
             'fields': (
-                'username', 'email', 'password', 'instagram_username'
+                'username', 'email', 'password'
             )
         }),
         ('パーミッション', {
