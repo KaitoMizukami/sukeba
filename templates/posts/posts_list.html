@@ -16,7 +16,7 @@
                     <img src="{{ post.location.location_image.url }}" width="270" height="420">
                 </div>
                 <div class="content">
-                    <a href="#">
+                    <a href="{% url 'authentications:profile' pk=post.author.id %}">
                         <strong>{{ post.author }}</strong>
                     </a>
                     <p class="is-size-5">
