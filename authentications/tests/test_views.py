@@ -34,12 +34,26 @@ class AuthenticationsSignupViewTest(TestCase):
     def test_view_creates_a_new_user(self):
         before_count = User.objects.all().count
         response = self.client.post(reverse(self.url_name), {
-            'username': 'testuser', 'email': 'test@mail.com',
+            'username': 'testuser1', 'email': 'test1@mail.com',
             'password': 'testpassword', 'confirm_password': 'testpassword'
         }, follow=True)
         self.assertEqual(response.status_code, 200)
         after_count = User.objects.all().count
         self.assertNotEqual(before_count, after_count)
+
+    def test_view_redirect_to_main_page_after_success_signup(self):
+        response = self.client.post(reverse(self.url_name), {
+            'username': 'testuser2', 'email': 'test2@mail.com',
+            'password': 'testpassword', 'confirm_password': 'testpassword'
+        }, follow=True)
+        self.assertTemplateUsed(response, 'posts/posts_list.html')
+
+    def test_view_automatically_login_after_success_signup(self):
+        response = self.client.post(reverse(self.url_name), {
+            'username': 'testuser3', 'email': 'test3@mail.com',
+            'password': 'testpassword', 'confirm_password': 'testpassword'
+        }, follow=True)
+        self.assertTrue(response.context['user'].is_authenticated)
     
     def test_authenticated_user_redirect_to_main_page(self):
         _ = self.client.post(reverse('authentications:login'), self.credentials)
