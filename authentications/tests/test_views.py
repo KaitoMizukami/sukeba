@@ -13,7 +13,7 @@ class AuthenticationsSignupViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.signup_template = 'authentications/authentications_signup.html'
+        self.template_name = 'authentications/authentications_signup.html'
         self.credentials = {
             'email': 'test@mail.com', 'password': 'testpassword'
         }
@@ -29,7 +29,7 @@ class AuthenticationsSignupViewTest(TestCase):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse(self.url_name))
-        self.assertTemplateUsed(response, self.signup_template)
+        self.assertTemplateUsed(response, self.template_name)
 
     def test_view_creates_a_new_user(self):
         before_count = User.objects.all().count
@@ -62,12 +62,12 @@ class AuthenticationsSignupViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         response = self.client.get(reverse(self.url_name), follow=True)
         # リダイレクト先のHTMLファイルを確認
-        self.assertTemplateNotUsed(response, self.signup_template)
+        self.assertTemplateNotUsed(response, self.template_name)
         self.assertTemplateUsed(response, 'posts/posts_list.html')
 
     def test_view_render_signup_page_if_form_is_invalid(self):
         response = self.client.post(reverse(self.url_name), {})
-        self.assertTemplateUsed(response, self.signup_template)
+        self.assertTemplateUsed(response, self.template_name)
 
 
 class AuthenticationsLoginViewTest(TestCase):
@@ -79,7 +79,7 @@ class AuthenticationsLoginViewTest(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.login_template = 'authentications/authentications_login.html'
+        self.template_name = 'authentications/authentications_login.html'
         self.credentials = {
             'email': 'test@mail.com', 'password': 'testpassword'
         }
@@ -95,7 +95,7 @@ class AuthenticationsLoginViewTest(TestCase):
 
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse(self.url_name))
-        self.assertTemplateUsed(response, self.login_template)
+        self.assertTemplateUsed(response, self.template_name)
 
     def test_view_can_login(self):
         response = self.client.post(reverse(self.url_name), self.credentials, follow=True)
@@ -111,7 +111,7 @@ class AuthenticationsLoginViewTest(TestCase):
         response = self.client.post(reverse(self.url_name), {
             'email': 'aaaaa@mail.com', 'password': 'aaaaaaaaa'
         }, follow=True)
-        self.assertTemplateUsed(response, self.login_template)
+        self.assertTemplateUsed(response, self.template_name)
 
 
 class AuthenticationsLogoutViewTest(TestCase):
@@ -172,5 +172,4 @@ class UserProfileViewTest(TestCase):
     def test_view_uses_correct_template(self):
         response = self.client.get(reverse(self.url_name, kwargs={'pk': self.user.pk}))
         self.assertTemplateUsed(response, self.template_name)
-    
     
