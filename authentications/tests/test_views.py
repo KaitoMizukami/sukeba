@@ -49,3 +49,47 @@ class AuthenticationsSignupViewTest(TestCase):
     def test_view_render_signup_page_if_form_is_invalid(self):
         response = self.client.post(reverse('authentications:signup'), {})
         self.assertTemplateUsed(response, 'authentications/authentications_signup.html')
+
+
+class AuthenticationsLoginViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create(username='testuser', email='test@mail.com')
+        user.set_password('testpassword')
+        user.save()
+
+    def setUp(self):
+        self.client = Client()
+        self.login_template = 'authentications/authentications_login.html'
+        self.credentials = {
+            'email': 'test@mail.com', 'password': 'testpassword'
+        }
+        self.url_name = 'authentications:login'
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/accounts/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse(self.url_name))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse(self.url_name))
+        self.assertTemplateUsed(response, self.login_template)
+
+    def test_view_can_login(self):
+        response = self.client.post(reverse(self.url_name), self.credentials, follow=True)
+        self.assertTrue(response.context['user'].is_authenticated)
+
+    def test_authenticated_user_redirect_to_main_page(self):
+        response = self.client.post(reverse(self.url_name), self.credentials, follow=True)
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse(self.url_name), follow=True)
+        self.assertTemplateUsed(response, 'posts/posts_list.html')
+
+    def test_redirect_to_login_page_if_user_not_found(self):
+        response = self.client.post(reverse(self.url_name), {
+            'email': 'aaaaa@mail.com', 'password': 'aaaaaaaaa'
+        }, follow=True)
+        self.assertTemplateUsed(response, self.login_template)
