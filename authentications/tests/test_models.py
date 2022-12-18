@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.db.utils import IntegrityError, DataError
 
 from authentications.models import User
 
@@ -28,6 +29,11 @@ class UserModelTest(TestCase):
         max_length = user._meta.get_field('email').max_length
         self.assertEqual(max_length, 250)
 
+    def test_raises_error_when_email_over_250_characters(self):
+        user = User(email='a'*242+'@mail.com', password='testuser', username='test')
+        with self.assertRaises(DataError):
+            user.save()
+
     def test_email_unique(self):
         user = User.objects.get(id=1)
         is_unique = user._meta.get_field('email').unique
@@ -38,6 +44,11 @@ class UserModelTest(TestCase):
         max_length = user._meta.get_field('username').max_length
         self.assertTrue(max_length, 100)
 
+    def test_raises_error_when_username_over_100_characters(self):
+        user = User(username='a'*101, email='test@mail.com', password='testpassword')
+        with self.assertRaises(DataError):
+            user.save()
+
     def test_user_is_not_staff_by_default(self):
         self.assertFalse(self.user.is_staff)
 
@@ -46,6 +57,11 @@ class UserModelTest(TestCase):
 
     def test_set_is_active_by_default(self):
         self.assertTrue(self.user.is_active)
+
+    def test_raise_error_if_email_is_duplicated(self):
+        error_user = User(username='testuser', email='test@mail.com', password='testuser')
+        with self.assertRaises(IntegrityError):
+            error_user.save()
 
     def test_user_object_as_string_is_equal_to_username(self):
         self.assertEqual(str(self.user), self.user.username)
