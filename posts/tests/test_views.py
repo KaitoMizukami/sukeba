@@ -66,5 +66,42 @@ class PostsListViewTest(TestCase):
         response = PostsListView.as_view()(request)
         self.assertIsInstance(response.context_data, dict)
         self.assertEqual(response.context_data['prefectures'], PREFECTURE_CHOICES)
-    
+
+
+class PostsCreateViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create(username='testuser', email='test@mail.com')
+        user.set_password('testpassword')
+        user.save()
+
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.user = User.objects.get(id=1)
+        self.credentials = {
+            'email': 'test@mail.com', 'password': 'testpassword'
+        }
+        self.url_name = 'posts:create'
+        self.template_name = 'posts/posts_create.html'
+
+    def test_view_url_exists_at_desired_location(self):
+        _ = self.client.post(reverse('authentications:login'), self.credentials, follow=True)
+        response = self.client.get('/posts/create/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        _ = self.client.post(reverse('authentications:login'), self.credentials, follow=True)
+        response = self.client.get(reverse(self.url_name))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        _ = self.client.post(reverse('authentications:login'), self.credentials, follow=True)
+        response = self.client.get(reverse(self.url_name))
+        self.assertTemplateUsed(response, self.template_name)
+
+    def test_view_redirect_to_login_page_if_not_authenticated(self):
+        response = self.client.get(reverse(self.url_name), follow=True)
+        self.assertTemplateUsed(response, 'authentications/authentications_login.html')
+
     
