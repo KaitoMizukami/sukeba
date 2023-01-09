@@ -41,7 +41,7 @@ class AuthenticationsSignupView(UnauthenticatedOnly, FormView):
             login(request, user)
             return redirect('posts:list')
         else:
-            return render(request, 'authentications/authentications_signup.html', {'form': user_form})
+            return render(request, self.template_name, {'form': user_form})
 
 
 class AuthenticationsLoginView(UnauthenticatedOnly, FormView):
@@ -86,4 +86,4 @@ class UserProfileView(DetailView):
             'user': user,
             'posts': user_posts
         }
-        return render(request, 'authentications/user_profile.html', context)
+        return render(request, self.template_name, context)
